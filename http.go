@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"bytes"
+	"strings"
 
 	"github.com/luraproject/lura/v2/config"
 	transport "github.com/luraproject/lura/v2/transport/http/client"
@@ -70,7 +71,8 @@ func HTTPRequestExecutorFromConfig(clientFactory transport.HTTPClientFactory, cf
 						}
 						fmt.Println(cr.ProductId)
 						fmt.Println(r.URL)
-						fmt.Println(r.URL.Path)
+						path := r.URL.Path[:strings.LastIndex(r.URL.Path, "/")+1] + lastArgument
+						fmt.Println(path)
 						keys, ok := r.URL.Query()["tenant"]
 						 if !ok || len(keys[0]) < 1 {
         					fmt.Println("Url Param 'Tenant' is missing")
