@@ -55,6 +55,8 @@ func HTTPRequestExecutorFromConfig(clientFactory transport.HTTPClientFactory, cf
 					},
 					func(r *http.Request) tag.Mutator {
 						b, err := ioutil.ReadAll(r.Body)
+						r.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+
 						// defer r.Body.Close()
 						if err != nil {
 							fmt.Println(err.Error())
