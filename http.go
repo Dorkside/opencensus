@@ -2,8 +2,6 @@ package opencensus
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/luraproject/lura/v2/config"
@@ -49,17 +47,16 @@ func HTTPRequestExecutorFromConfig(clientFactory transport.HTTPClientFactory, cf
 						return tag.Upsert(ochttp.KeyClientPath, pathExtractor(r))
 					},
 					func(r *http.Request) tag.Mutator {
-						type ComputationRequest struct {
-							ProductId string
-						}
-						var cr ComputationRequest
-						if r.Body != nil {
-							error := json.NewDecoder(r.Body).Decode(&cr)
-							if error == nil {
-								fmt.Println(cr.ProductId)
-							}
-							defer r.Body.Close()
-						}
+						// type ComputationRequest struct {
+						// 	ProductId string
+						// }
+						// var cr ComputationRequest
+						// if r.Body != nil {
+						// 	error := json.NewDecoder(r.Body).Decode(&cr)
+						// 	if error == nil {
+						// 		fmt.Println(cr.ProductId)
+						// 	}
+						// }
 						return tag.Upsert(tag.MustNewKey("http_client_tenant"), r.URL.Path)
 					},
 					func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.KeyClientMethod, req.Method) },
