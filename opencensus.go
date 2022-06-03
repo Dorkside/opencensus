@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"regexp"
 	"strings"
@@ -48,8 +47,6 @@ func Register(ctx context.Context, srvCfg config.ServiceConfig, vs ...*view.View
 
 		enabledLayers = EnabledLayers{true, true, true}
 	})
-
-	fmt.Println("Hello, World!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
 	return err
 }

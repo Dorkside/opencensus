@@ -45,9 +45,9 @@ func HTTPRequestExecutorFromConfig(clientFactory transport.HTTPClientFactory, cf
 				tags: []tagGenerator{
 					func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.KeyClientHost, req.Host) },
 					func(r *http.Request) tag.Mutator {
-						fmt.Println("r.URL.Path")
 						fmt.Println(r.URL.Path)
-						return tag.Upsert(ochttp.KeyClientPath, pathExtractor(r))
+						fmt.Println(pathExtractor(r))
+						return tag.Upsert(ochttp.KeyClientPath, r.URL.Path)
 					},
 					func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.KeyClientMethod, req.Method) },
 				},
