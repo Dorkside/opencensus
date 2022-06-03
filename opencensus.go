@@ -14,6 +14,7 @@ import (
 	"github.com/luraproject/lura/v2/config"
 	"go.opencensus.io/plugin/ochttp"
 	"go.opencensus.io/stats/view"
+	"go.opencensus.io/tag"
 	"go.opencensus.io/trace"
 )
 
@@ -102,6 +103,11 @@ func (c composableRegister) Register(ctx context.Context, cfg Config, vs []*view
 				// Path
 				if cfg.Exporters.Prometheus.PathTag {
 					view.TagKeys = appendIfMissing(view.TagKeys, ochttp.KeyClientPath)
+				}
+
+				// Tenant
+				if cfg.Exporters.Prometheus.TenantTag {
+					view.TagKeys = appendIfMissing(view.TagKeys, tag.MustNewKey("http_client_tenant"))
 				}
 
 				// Method
@@ -196,6 +202,7 @@ type PrometheusConfig struct {
 	Port          int    `json:"port"`
 	HostTag       bool   `json:"tag_host"`
 	PathTag       bool   `json:"tag_path"`
+	TenantTag     bool   `json:"tag_tenant"`
 	MethodTag     bool   `json:"tag_method"`
 	StatusCodeTag bool   `json:"tag_statuscode"`
 }
