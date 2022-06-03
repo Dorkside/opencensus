@@ -70,6 +70,7 @@ func HTTPRequestExecutorFromConfig(clientFactory transport.HTTPClientFactory, cf
 						}
 						fmt.Println(cr.ProductId)
 						fmt.Println(r.URL)
+						fmt.Println(r.URL.Path)
 						keys, ok := r.URL.Query()["tenant"]
 						 if !ok || len(keys[0]) < 1 {
         					fmt.Println("Url Param 'Tenant' is missing")
