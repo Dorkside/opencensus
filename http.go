@@ -49,14 +49,13 @@ func HTTPRequestExecutorFromConfig(clientFactory transport.HTTPClientFactory, cf
 						return tag.Upsert(ochttp.KeyClientPath, pathExtractor(r))
 					},
 					func(r *http.Request) tag.Mutator {
-						var ComputationRequest struct {
+						type ComputationRequest struct {
 							ProductId string
 						}
-						if r.Body != nil {
-							error := json.NewDecoder(r.Body).Decode(&ComputationRequest)
-							if error != nil {
-								fmt.Println(ComputationRequest.ProductId)
-							}
+						var cr ComputationRequest
+						error := json.NewDecoder(r.Body).Decode(&cr)
+						if error == nil {
+							fmt.Println(cr.ProductId)
 						}
 						return tag.Upsert(tag.MustNewKey("http_client_tenant"), r.URL.Path)
 					},
