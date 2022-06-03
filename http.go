@@ -69,6 +69,7 @@ func HTTPRequestExecutorFromConfig(clientFactory transport.HTTPClientFactory, cf
 						keys, ok := r.URL.Query()["tenant"]
 						 if !ok || len(keys[0]) < 1 {
         					fmt.Println("Url Param 'Tenant' is missing")
+							return tag.Upsert(tag.MustNewKey("http_client_tenant"), "not_found")
     					}
 						key := keys[0]
 						return tag.Upsert(tag.MustNewKey("http_client_tenant"), string(key))
