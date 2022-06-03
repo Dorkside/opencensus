@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/luraproject/lura/v2/config"
@@ -54,12 +55,15 @@ func HTTPRequestExecutorFromConfig(clientFactory transport.HTTPClientFactory, cf
 					},
 					func(r *http.Request) tag.Mutator {
 						var cr ComputationRequest
-						if r.Body != nil {
-							error := json.NewDecoder(r.Body).Decode(&cr)
-							if error == nil {
-								fmt.Println(cr.ProductId)
-							}
+						body, error := ioutil.ReadAll(r.Body)
+						if error != nil {
+							panic(error)
 						}
+						error = json.Unmarshal(body, &cr)
+						if error != nil {
+							panic(error)
+						}
+						fmt.Println(cr.ProductId)
 						return tag.Upsert(tag.MustNewKey("http_client_tenant"), r.URL.Path)
 					},
 					func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.KeyClientMethod, req.Method) },
