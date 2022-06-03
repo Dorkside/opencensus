@@ -20,7 +20,7 @@ import (
 
 var (
 	extraConfig = []byte(`{
-		"github_com/devopsfaith/krakend-opencensus": {
+		"github_com/Dorkside/opencensus": {
 			"enabled_layers": {
 				"router": true
 			}
