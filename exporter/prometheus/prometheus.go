@@ -14,12 +14,14 @@ import (
 )
 
 func init() {
+	fmt.Println("Hello, World!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 	opencensus.RegisterExporterFactories(func(ctx context.Context, cfg opencensus.Config) (interface{}, error) {
 		return Exporter(ctx, cfg)
 	})
 }
 
 func Exporter(ctx context.Context, cfg opencensus.Config) (*prometheus.Exporter, error) {
+	fmt.Println("Hello, World!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 	if cfg.Exporters.Prometheus == nil {
 		return nil, errDisabled
 	}
