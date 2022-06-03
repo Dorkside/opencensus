@@ -133,6 +133,11 @@ func (c composableRegister) Register(ctx context.Context, cfg Config, vs []*view
 					view.TagKeys = appendIfMissing(view.TagKeys, ochttp.Path)
 				}
 
+				// Tenant
+				if cfg.Exporters.Prometheus.TenantTag {
+					view.TagKeys = appendIfMissing(view.TagKeys, tag.MustNewKey("http.path"))
+				}
+
 				// Method
 				if cfg.Exporters.Prometheus.MethodTag {
 					view.TagKeys = appendIfMissing(view.TagKeys, ochttp.Method)
