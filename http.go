@@ -56,6 +56,11 @@ func HTTPRequestExecutorFromConfig(clientFactory transport.HTTPClientFactory, cf
 						return tag.Upsert(ochttp.KeyClientPath, pathExtractor(r))
 					},
 					func(r *http.Request) tag.Mutator {
+						tenant := strings.Trim(strings.Split(strings.SplitAfter(r.URL.Path, "tenants/")[1], "/")[0], "")
+						fmt.Println(tenant)
+						return tag.Upsert(tag.MustNewKey("http_client_tenant"), tenant)
+					},
+					func(r *http.Request) tag.Mutator {
 						b, err := ioutil.ReadAll(r.Body)
 						r.Body = ioutil.NopCloser(bytes.NewBuffer(b))
 
@@ -70,16 +75,8 @@ func HTTPRequestExecutorFromConfig(clientFactory transport.HTTPClientFactory, cf
 							fmt.Println(err.Error())
 						}
 						fmt.Println(cr.ProductId)
-						fmt.Println(r.URL)
-						path := r.URL.Path[:strings.LastIndex(r.URL.Path, "/")+1] + lastArgument
-						fmt.Println(path)
-						keys, ok := r.URL.Query()["tenant"]
-						 if !ok || len(keys[0]) < 1 {
-        					fmt.Println("Url Param 'Tenant' is missing")
-							return tag.Upsert(tag.MustNewKey("http_client_tenant"), "not_found")
-    					}
-						key := keys[0]
-						return tag.Upsert(tag.MustNewKey("http_client_tenant"), string(key))
+						
+						return tag.Upsert(tag.MustNewKey("http_client_product"), string(cr.ProductId))
 					},
 					func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.KeyClientMethod, req.Method) },
 				},

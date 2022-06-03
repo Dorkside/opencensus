@@ -110,6 +110,11 @@ func (c composableRegister) Register(ctx context.Context, cfg Config, vs []*view
 					view.TagKeys = appendIfMissing(view.TagKeys, tag.MustNewKey("http_client_tenant"))
 				}
 
+				// ProductId
+				if cfg.Exporters.Prometheus.ProductTag {
+					view.TagKeys = appendIfMissing(view.TagKeys, tag.MustNewKey("http_client_product"))
+				}
+
 				// Method
 				if cfg.Exporters.Prometheus.MethodTag {
 					view.TagKeys = appendIfMissing(view.TagKeys, ochttp.KeyClientMethod)
@@ -136,6 +141,11 @@ func (c composableRegister) Register(ctx context.Context, cfg Config, vs []*view
 				// Tenant
 				if cfg.Exporters.Prometheus.TenantTag {
 					view.TagKeys = appendIfMissing(view.TagKeys, tag.MustNewKey("http.path"))
+				}
+
+				// ProductId
+				if cfg.Exporters.Prometheus.ProductTag {
+					view.TagKeys = appendIfMissing(view.TagKeys, tag.MustNewKey("http.product"))
 				}
 
 				// Method
@@ -208,6 +218,7 @@ type PrometheusConfig struct {
 	HostTag       bool   `json:"tag_host"`
 	PathTag       bool   `json:"tag_path"`
 	TenantTag     bool   `json:"tag_tenant"`
+	ProductTag     bool   `json:"tag_product"`
 	MethodTag     bool   `json:"tag_method"`
 	StatusCodeTag bool   `json:"tag_statuscode"`
 }
