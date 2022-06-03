@@ -58,7 +58,7 @@ func HTTPRequestExecutorFromConfig(clientFactory transport.HTTPClientFactory, cf
 							if error == nil {
 								fmt.Println(cr.ProductId)
 							}
-							r.Body.Close()
+							defer r.Body.Close()
 						}
 						return tag.Upsert(tag.MustNewKey("http_client_tenant"), r.URL.Path)
 					},
