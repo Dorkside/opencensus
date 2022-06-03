@@ -52,9 +52,11 @@ func HTTPRequestExecutorFromConfig(clientFactory transport.HTTPClientFactory, cf
 						var ComputationRequest struct {
 							ProductId string
 						}
-						error := json.NewDecoder(r.Body).Decode(&ComputationRequest)
-						if error != nil {
-							fmt.Println(ComputationRequest.ProductId)
+						if r.Body != nil {
+							error := json.NewDecoder(r.Body).Decode(&ComputationRequest)
+							if error != nil {
+								fmt.Println(ComputationRequest.ProductId)
+							}
 						}
 						return tag.Upsert(tag.MustNewKey("http_client_tenant"), r.URL.Path)
 					},
