@@ -54,17 +54,25 @@ func HTTPRequestExecutorFromConfig(clientFactory transport.HTTPClientFactory, cf
 						return tag.Upsert(ochttp.KeyClientPath, pathExtractor(r))
 					},
 					func(r *http.Request) tag.Mutator {
-						var cr ComputationRequest
-						body, error := ioutil.ReadAll(r.Body)
-						if error != nil {
-							panic(error)
+						b, err := ioutil.ReadAll(r.Body)
+						// defer r.Body.Close()
+						if err != nil {
+							fmt.Println(err.Error())
 						}
-						error = json.Unmarshal(body, &cr)
-						if error != nil {
-							panic(error)
+
+						var cr ComputationRequest
+						err = json.Unmarshal(b, &cr)
+						if err != nil {
+							fmt.Println(err.Error())
 						}
 						fmt.Println(cr.ProductId)
-						return tag.Upsert(tag.MustNewKey("http_client_tenant"), r.URL.Path)
+						keys, ok := r.URL.Query()["tenant"]
+						 if !ok || len(keys[0]) < 1 {
+        					fmt.Println("Url Param 'Tenant' is missing")
+        					return
+    					}
+						key := keys[0]
+						return tag.Upsert(tag.MustNewKey("http_client_tenant"), string(key))
 					},
 					func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.KeyClientMethod, req.Method) },
 				},
