@@ -2,7 +2,6 @@ package opencensus
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/luraproject/lura/v2/config"
@@ -45,9 +44,10 @@ func HTTPRequestExecutorFromConfig(clientFactory transport.HTTPClientFactory, cf
 				tags: []tagGenerator{
 					func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.KeyClientHost, req.Host) },
 					func(r *http.Request) tag.Mutator {
-						fmt.Println(r.URL.Path)
-						fmt.Println(pathExtractor(r))
-						return tag.Upsert(ochttp.KeyClientPath, r.URL.Path)
+						return tag.Upsert(ochttp.KeyClientPath, pathExtractor(r))
+					},
+					func(r *http.Request) tag.Mutator {
+						return tag.Upsert(tag.MustNewKey("tenant"), r.URL.Path)
 					},
 					func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.KeyClientMethod, req.Method) },
 				},
