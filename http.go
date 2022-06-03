@@ -2,7 +2,6 @@ package opencensus
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/luraproject/lura/v2/config"
@@ -38,8 +37,6 @@ func HTTPRequestExecutorFromConfig(clientFactory transport.HTTPClientFactory, cf
 		if _, ok := httpClient.Transport.(*Transport); ok {
 			return httpClient.Do(req.WithContext(trace.NewContext(ctx, fromContext(ctx))))
 		}
-
-		fmt.Println("Hello, World!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
 		c := &http.Client{
 			Transport: &Transport{
