@@ -53,25 +53,10 @@ func HandlerFunc(cfg *config.EndpointConfig, next gin.HandlerFunc, prop propagat
 			func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.Host, r.Host) },
 			func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.Method, r.Method) },
 			func(r *http.Request) tag.Mutator { 
-				tenant := strings.Trim(strings.Split(strings.SplitAfter(r.URL.Path, "tenants/")[1], "/")[0], "")				
-				return tag.Upsert(tag.MustNewKey("http.tenant"), tenant) 
+				return tag.Upsert(tag.MustNewKey("http.tenant"), opencensus.getTenant(r)) 
 			},
-			func(r *http.Request) tag.Mutator { 
-				b, err := ioutil.ReadAll(r.Body)
-				r.Body = ioutil.NopCloser(bytes.NewBuffer(b))
-
-				if err != nil {
-					fmt.Println(err.Error())
-				}
-
-				var cr CCRequest
-				err = json.Unmarshal(b, &cr)
-				if err != nil {
-					fmt.Println(err.Error())
-				}
-						
-				return tag.Upsert(tag.MustNewKey("http.product"), string(cr.ProductId))	
-
+			func(r *http.Request) tag.Mutator { 		
+				return tag.Upsert(tag.MustNewKey("http.product"), string(opencensus.getProduct(r)))	
 			 },
 			func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.Path, pathExtractor(r)) },
 		},
