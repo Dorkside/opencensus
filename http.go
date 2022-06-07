@@ -56,6 +56,11 @@ func HTTPRequestExecutorFromConfig(clientFactory transport.HTTPClientFactory, cf
 						return tag.Upsert(ochttp.KeyClientPath, pathExtractor(r))
 					},
 					func(r *http.Request) tag.Mutator {
+						requestDump, err := httputil.DumpRequest(req, true)
+						if err != nil {
+						fmt.Println(err)
+						}
+						fmt.Println(string(requestDump))
 						tenant := strings.Trim(strings.Split(strings.SplitAfter(r.URL.Path, "tenants/")[1], "/")[0], "")
 						fmt.Println(tenant)
 						return tag.Upsert(tag.MustNewKey("http_client_tenant"), tenant)
