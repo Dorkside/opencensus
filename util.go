@@ -45,12 +45,9 @@ func getProduct (r *http.Request) string {
 		fmt.Println(err.Error())
 		return ""
 	}
-	fmt.Println("[Getting Product Id]: "+cr.ProductId)
 	if len(cr.ProductId) > 0 {
 		return cr.ProductId
 	}
-	fmt.Println("Product Not Found In Body, checking path...")
 	product := strings.Trim(strings.Split(strings.SplitAfter(r.URL.Path, "products/")[1], "/")[0], "")
-	fmt.Println("Product from path: "+product)
 	return product
 }
