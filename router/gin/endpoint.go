@@ -1,13 +1,8 @@
 package gin
 
 import (
-	"fmt"
-	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"time"
-	"bytes"
-	"strings"
 	"github.com/gin-gonic/gin"
 	"github.com/luraproject/lura/v2/config"
 	"github.com/luraproject/lura/v2/proxy"
@@ -20,11 +15,9 @@ import (
 	"go.opencensus.io/trace/propagation"
 
 	opencensus "github.com/Dorkside/opencensus"
+	utils "github.com/Dorkside/opencensus/utils"
 )
 
-type CCRequest struct {
-	ProductId string
-}
 
 // New wraps a handler factory adding some simple instrumentation to the generated handlers
 func New(hf krakendgin.HandlerFactory) krakendgin.HandlerFactory {
@@ -53,10 +46,10 @@ func HandlerFunc(cfg *config.EndpointConfig, next gin.HandlerFunc, prop propagat
 			func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.Host, r.Host) },
 			func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.Method, r.Method) },
 			func(r *http.Request) tag.Mutator { 
-				return tag.Upsert(tag.MustNewKey("http.tenant"), opencensus.getTenant(r)) 
+				return tag.Upsert(tag.MustNewKey("http.tenant"), utils.getTenant(r)) 
 			},
 			func(r *http.Request) tag.Mutator { 		
-				return tag.Upsert(tag.MustNewKey("http.product"), string(opencensus.getProduct(r)))	
+				return tag.Upsert(tag.MustNewKey("http.product"), string(utils.getProduct(r)))	
 			 },
 			func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.Path, pathExtractor(r)) },
 		},
