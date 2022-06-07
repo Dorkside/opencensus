@@ -32,6 +32,7 @@ func HTTPRequestExecutor(clientFactory transport.HTTPClientFactory) transport.HT
 
 type ComputationRequest struct {
 	ProductId string
+	productId string
 }
 
 func HTTPRequestExecutorFromConfig(clientFactory transport.HTTPClientFactory, cfg *config.Backend) transport.HTTPRequestExecutor {
@@ -81,6 +82,7 @@ func HTTPRequestExecutorFromConfig(clientFactory transport.HTTPClientFactory, cf
 							fmt.Println(err.Error())
 						}
 						fmt.Println(cr.ProductId)
+						fmt.Println(cr.productId)
 						
 						return tag.Upsert(tag.MustNewKey("http_client_product"), string(cr.ProductId))
 					},
