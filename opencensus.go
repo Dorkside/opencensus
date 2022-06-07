@@ -482,7 +482,7 @@ func registerViews(views ...*view.View) error {
 	return view.Register(views...)
 }
 
-func getTenant (r *http.Request) string {
+func GetTenant (r *http.Request) string {
 	tenant := strings.Trim(strings.Split(strings.SplitAfter(r.URL.Path, "tenants/")[1], "/")[0], "")
 	if len(tenant) > 0 {
 		return tenant
@@ -490,7 +490,7 @@ func getTenant (r *http.Request) string {
 	return ""
 }
 
-func getProduct (r *http.Request) string {
+func GetProduct (r *http.Request) string {
 	b, err := ioutil.ReadAll(r.Body)
 	r.Body = ioutil.NopCloser(bytes.NewBuffer(b))
 	if err != nil {

@@ -45,10 +45,10 @@ func HandlerFunc(cfg *config.EndpointConfig, next gin.HandlerFunc, prop propagat
 			func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.Host, r.Host) },
 			func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.Method, r.Method) },
 			func(r *http.Request) tag.Mutator { 
-				return tag.Upsert(tag.MustNewKey("http.tenant"), opencensus.getTenant(r)) 
+				return tag.Upsert(tag.MustNewKey("http.tenant"), opencensus.GetTenant(r)) 
 			},
 			func(r *http.Request) tag.Mutator { 		
-				return tag.Upsert(tag.MustNewKey("http.product"), string(opencensus.getProduct(r)))	
+				return tag.Upsert(tag.MustNewKey("http.product"), string(opencensus.GetProduct(r)))	
 			 },
 			func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.Path, pathExtractor(r)) },
 		},

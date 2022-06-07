@@ -48,10 +48,10 @@ func HTTPRequestExecutorFromConfig(clientFactory transport.HTTPClientFactory, cf
 						return tag.Upsert(ochttp.KeyClientPath, pathExtractor(r))
 					},
 					func(r *http.Request) tag.Mutator {
-						return tag.Upsert(tag.MustNewKey("http_client_tenant"), getTenant(r))
+						return tag.Upsert(tag.MustNewKey("http_client_tenant"), GetTenant(r))
 					},
 					func(r *http.Request) tag.Mutator {
-						return tag.Upsert(tag.MustNewKey("http_client_product"), string(getProduct(r)))
+						return tag.Upsert(tag.MustNewKey("http_client_product"), string(GetProduct(r)))
 					},
 					func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.KeyClientMethod, req.Method) },
 				},
