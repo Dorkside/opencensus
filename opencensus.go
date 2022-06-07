@@ -10,6 +10,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"fmt"
+	"io/ioutil"
 
 	"github.com/luraproject/lura/v2/config"
 	"go.opencensus.io/plugin/ochttp"
@@ -19,7 +21,9 @@ import (
 )
 
 type ExporterFactory func(context.Context, Config) (interface{}, error)
-
+type CCRequest struct {
+	ProductId string
+}
 func RegisterExporterFactories(ef ExporterFactory) {
 	mu.Lock()
 	exporterFactories = append(exporterFactories, ef)
@@ -476,6 +480,35 @@ func setReportingPeriod(d time.Duration) {
 
 func registerViews(views ...*view.View) error {
 	return view.Register(views...)
+}
+
+func getTenant (r *http.Request) string {
+	tenant := strings.Trim(strings.Split(strings.SplitAfter(r.URL.Path, "tenants/")[1], "/")[0], "")
+	if len(tenant) > 0 {
+		return tenant
+	}
+	return ""
+}
+
+func getProduct (r *http.Request) string {
+	b, err := ioutil.ReadAll(r.Body)
+	r.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+	if err != nil {
+		fmt.Println(err.Error())
+		return ""
+	}
+	
+	var cr CCRequest
+	err = json.Unmarshal(b, &cr)
+	if err != nil {
+		fmt.Println(err.Error())
+		return ""
+	}
+	if len(cr.ProductId) > 0 {
+		return cr.ProductId
+	}
+	product := strings.Trim(strings.Split(strings.SplitAfter(r.URL.Path, "products/")[1], "/")[0], "")
+	return product
 }
 
 const (
