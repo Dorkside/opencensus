@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"bytes"
 	"strings"
+	"httputil"
 
 	"github.com/luraproject/lura/v2/config"
 	transport "github.com/luraproject/lura/v2/transport/http/client"
@@ -56,7 +57,7 @@ func HTTPRequestExecutorFromConfig(clientFactory transport.HTTPClientFactory, cf
 						return tag.Upsert(ochttp.KeyClientPath, pathExtractor(r))
 					},
 					func(r *http.Request) tag.Mutator {
-						requestDump, err := httputil.DumpRequest(req, true)
+						requestDump, err := httputil.DumpRequest(r, true)
 						if err != nil {
 						fmt.Println(err)
 						}
