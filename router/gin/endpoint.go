@@ -22,7 +22,7 @@ import (
 	opencensus "github.com/Dorkside/opencensus"
 )
 
-type ComputationRequest struct {
+type CCRequest struct {
 	ProductId string
 }
 
@@ -64,7 +64,7 @@ func HandlerFunc(cfg *config.EndpointConfig, next gin.HandlerFunc, prop propagat
 					fmt.Println(err.Error())
 				}
 
-				var cr ComputationRequest
+				var cr CCRequest
 				err = json.Unmarshal(b, &cr)
 				if err != nil {
 					fmt.Println(err.Error())
