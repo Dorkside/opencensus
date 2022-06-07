@@ -1,9 +1,12 @@
 package gin
 
 import (
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"time"
-
+	"bytes"
+	"strings"
 	"github.com/gin-gonic/gin"
 	"github.com/luraproject/lura/v2/config"
 	"github.com/luraproject/lura/v2/proxy"
@@ -17,6 +20,10 @@ import (
 
 	opencensus "github.com/Dorkside/opencensus"
 )
+
+type ComputationRequest struct {
+	ProductId string
+}
 
 // New wraps a handler factory adding some simple instrumentation to the generated handlers
 func New(hf krakendgin.HandlerFactory) krakendgin.HandlerFactory {
@@ -44,7 +51,27 @@ func HandlerFunc(cfg *config.EndpointConfig, next gin.HandlerFunc, prop propagat
 			func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.KeyServerRoute, cfg.Endpoint) },
 			func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.Host, r.Host) },
 			func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.Method, r.Method) },
-			func(r *http.Request) tag.Mutator { return tag.Upsert(tag.MustNewKey("http.tenant"), r.URL.Path) },
+			func(r *http.Request) tag.Mutator { 
+				tenant := strings.Trim(strings.Split(strings.SplitAfter(r.URL.Path, "tenants/")[1], "/")[0], "")				
+				return tag.Upsert(tag.MustNewKey("http.tenant"), tenant) 
+			},
+			func(r *http.Request) tag.Mutator { 
+				b, err := ioutil.ReadAll(r.Body)
+				r.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+
+				if err != nil {
+					fmt.Println(err.Error())
+				}
+
+				var cr ComputationRequest
+				err = json.Unmarshal(b, &cr)
+				if err != nil {
+					fmt.Println(err.Error())
+				}
+						
+				return tag.Upsert(tag.MustNewKey("http.product"), string(cr.ProductId))	
+
+			 },
 			func(r *http.Request) tag.Mutator { return tag.Upsert(ochttp.Path, pathExtractor(r)) },
 		},
 	}
