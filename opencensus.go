@@ -140,12 +140,12 @@ func (c composableRegister) Register(ctx context.Context, cfg Config, vs []*view
 
 				// Tenant
 				if cfg.Exporters.Prometheus.TenantTag {
-					view.TagKeys = appendIfMissing(view.TagKeys, tag.MustNewKey("http.tenant"))
+					view.TagKeys = appendIfMissing(view.TagKeys, tag.MustNewKey("http.Tenant"))
 				}
 
 				// ProductId
 				if cfg.Exporters.Prometheus.ProductTag {
-					view.TagKeys = appendIfMissing(view.TagKeys, tag.MustNewKey("http.productId"))
+					view.TagKeys = appendIfMissing(view.TagKeys, tag.MustNewKey("http.Product"))
 				}
 
 				// Method
